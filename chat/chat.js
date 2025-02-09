@@ -1,4 +1,4 @@
-let IP = "192.168.171.204"
+let IP = "127.0.0.1"
     const ws = new WebSocket(`ws://${IP}:50`);
     let eastablished = false;
     let id=sessionStorage.getItem("username");
