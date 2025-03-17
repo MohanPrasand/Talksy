@@ -4,8 +4,71 @@ import base64
 import asyncio
 import aiofiles
 import websockchat
+import ssl
+import dbtalk
 import subprocess
 import json
+
+
+CONTENT_TYPES = {
+    "html": "text/html",
+    "htm": "text/html",
+    "css": "text/css",
+    "js": "application/javascript",
+    "json": "application/json",
+    "xml": "application/xml",
+    "txt": "text/plain",
+    "csv": "text/csv",
+
+    # Images
+    "png": "image/png",
+    "jpg": "image/jpeg",
+    "jpeg": "image/jpeg",
+    "gif": "image/gif",
+    "bmp": "image/bmp",
+    "webp": "image/webp",
+    "svg": "image/svg+xml",
+
+    # Fonts
+    "ttf": "font/ttf",
+    "otf": "font/otf",
+    "woff": "font/woff",
+    "woff2": "font/woff2",
+
+    # Audio
+    "mp3": "audio/mpeg",
+    "wav": "audio/wav",
+    "ogg": "audio/ogg",
+
+    # Video
+    "mp4": "video/mp4",
+    "webm": "video/webm",
+    "ogv": "video/ogg",
+
+    # Archives
+    "zip": "application/zip",
+    "tar": "application/x-tar",
+    "gz": "application/gzip",
+    "rar": "application/vnd.rar",
+    "7z": "application/x-7z-compressed",
+
+    # PDFs and Documents
+    "pdf": "application/pdf",
+    "doc": "application/msword",
+    "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "ppt": "application/vnd.ms-powerpoint",
+    "pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    "xls": "application/vnd.ms-excel",
+    "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+
+    # Executables
+    "exe": "application/octet-stream",
+    "bin": "application/octet-stream",
+    "dll": "application/octet-stream",
+}
+
+def getContentType(filename):
+    return CONTENT_TYPES.get(filename.split('.')[-1],"application/octet-stream")
 
 
 async def readfile(fname: str) -> bytes:
@@ -51,7 +114,7 @@ def file_not_found():
     return res
 
 async def handle_get(req):
-    filename = req["header"].split()[1]
+    filename = '.'+req["header"].split()[1]
     if '?'in filename:
         filename, args = filename.split('?')
         args = args.split('&')
@@ -65,8 +128,10 @@ async def handle_get(req):
         args = None
     
     
-    if os.path.isdir('.'+filename) and filename[-1] != '/':
-        return f"""HTTP/1.1 301 Redirect\r\nLocation: {filename}/\r\n\r\n""".encode()
+    if os.path.isdir(filename):
+        if filename[-1] != '/':
+            return f"""HTTP/1.1 301 Redirect\r\nLocation: {filename}/\r\n\r\n""".encode()
+        filename += "index.html"
         
 
     
@@ -74,7 +139,7 @@ async def handle_get(req):
         data = await readfile(filename)
         if not data:
             return file_not_found().encode()
-        res = f"""HTTP/1.1 200 OK\r\nContent-type: text\html\r\nContent-length: {len(data)}\r\n\r\n""".encode()+data
+        res = f"""HTTP/1.1 200 OK\r\nContent-type: {getContentType(filename)}\r\nContent-length: {len(data)}\r\n\r\n""".encode()+data
         return res
     
     command = "php" if filename.endswith("php") else "python"
@@ -91,6 +156,7 @@ async def handle_get(req):
             text= True
         )
     elif command=="python":
+        
         process = subprocess.Popen(
             [command, filename] + [args,],
             stdout = subprocess.PIPE,
@@ -115,13 +181,16 @@ async def handle_post(req):
                 f"Content-length: {len(data)}\r\n\r\n"
                 f"{data}").encode()
         return res
-    data = req["data"].split('&')
-    datad = {}
-    for i in data:
-        key, val = i.split('=')
-        datad[key] = val
+    if '=' in req["data"]:
+        req["data"] = req["data"].split('&')
+        datad = {}
+        for i in req["data"]:
+            key, v = i.split('=')
+            datad[key] = v
+        req["data"] = datad.copy()
+        
+        req["data"] =json.dumps(req["data"])
     
-    req["data"] =json.dumps(datad)
     prcs = subprocess.Popen(["python",filename]+[req["data"],],
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE,
@@ -132,7 +201,6 @@ async def handle_post(req):
         res = f"""HTTP/1.1 400 Bad Request\r\nContent-type: text/html\r\nContent-length: {len(error)}\r\n\r\n"""+error
     else:        
         res = f"""HTTP/1.1 200 OK\r\nContent-type: text/html\r\nContent-length: {len(output)}\r\n\r\n"""+output
-    
     return res.encode()
 
 
@@ -156,6 +224,19 @@ async def httpHandler(reader, writer):
     elif req["header"].startswith("POST"):
         writer.write(await handle_post(req))
         await writer.drain()
+    
+    elif req["header"].startswith("OPTIONS"):
+        response = (
+            "HTTP/1.1 204 No Content\r\n"
+            "Access-Control-Allow-Origin: *\r\n"
+            "Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n"
+            "Access-Control-Allow-Headers: Content-Type\r\n"
+            "Content-Length: 0\r\n"
+            "Connection: keep-alive\r\n\r\n"
+        )
+        writer.write(response.encode())
+        await writer.drain()
+        
         
         
 

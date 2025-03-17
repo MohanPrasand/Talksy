@@ -49,10 +49,19 @@ async def receive_handler(data: str) -> bool:
             asyncio.create_task(dbtalk.insert_message(req.copy()))
                 
         elif req["type"] == "status":
-            await dbtalk.update_status(req["msg_id"], req["status"])
-            if req["receiver"] in Users.online:
-                Users.queue[req["receiver"]].append(req)
-                asyncio.create_task(req["receiver"])
+            await dbtalk.update_status(req["msg_id"], 3)
+            req = await dbtalk.get_message_by_id(req["msg_id"])
+            if req["sender"] in Users.online:
+                Users.queue[req["sender"]].append({"type":"status", "msg_id":req["msg_id"], "status":3})
+                asyncio.create_task(send_handler(req["sender"]))
+        elif req["type"] == "userExist":
+            res = await dbtalk.userExist(req["username"])
+            if res:
+                Users.queue[req["sender"]].append({"type":"userExist", "username": req["username"],"status":1})
+            else:
+                Users.queue[req["sender"]].append({"type":"userExist", "username":req["username"], "status":0})
+            asyncio.create_task(send_handler(req["sender"]))
+                
 
 
 
@@ -81,7 +90,7 @@ async def send_handler(id):
                 Users.deleteUser(msg["sender"])
                 break
             
-            if msg["type"] == "message" and msg["status"]<2:
+            if msg["type"] == "message" and msg["sender"] != id and msg["status"]<2:
                 if msg["sender"] in Users.online:
                     Users.queue[msg["sender"]].append({"type":"status","msg_id": msg["msg_id"], "status":2})
                     asyncio.create_task(send_handler(msg["sender"]))
