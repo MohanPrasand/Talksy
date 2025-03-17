@@ -1,0 +1,230 @@
+*{
+    margin:0;
+    --bg1: 	#fff6d6; 
+    --bg2: 	#fff3c5;
+    --interactive: #ff6f69;
+    --send: #e5c3c6;
+    --receive: #96ceb4;
+    font-size: large;
+}
+body{
+    height: 100vh;
+    width: 100vw;
+    background: gray;
+    display: grid;
+    grid-template-rows: 100%;
+    grid-template-columns: 100%;
+}
+
+#main{
+    position: relative;
+    top: 0%;
+    left: 0%;
+    background: var(--bg1);
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 100%;
+    
+}
+
+#left, #right{
+    background: var(--bg1);
+    display: grid;
+    grid-template-rows: 100%;
+    grid-template-columns: 100%;
+    border-right: solid 2px gray;
+}
+
+#contactList{
+    background: var(--bg2);
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 95% 5%;
+}
+
+#clist{
+    overflow-y: auto;
+}
+
+.contact{
+    height: 5%;
+    border-bottom: solid 2px var(--send);
+    padding-left: 2%;
+    cursor: pointer;
+    line-height: 250%;
+}
+
+#addContact{
+    display: grid;
+    grid-template-rows: 100%;
+    grid-template-columns: 95% 5%;
+}
+
+#newContact{
+    background: antiquewhite;
+    padding-left: 2%;
+    margin-right: 1%;
+    border: solid 1px var(--interactive);
+    
+}
+#newContact:focus{
+    outline: 0;
+}
+
+#addBtn{
+    border-radius: 50%;
+    background: var(--interactive);
+    cursor: pointer;
+}
+
+#chatArea{
+    background: var(--bg1);
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 5% 90% 5%;
+}
+
+#profile{
+    font-size: x-large;
+    background: #96ceb4;
+    padding: 1%;
+}
+
+#chatBox{
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#messageWriter{
+    display: grid;
+    grid-template-columns: 90% 10%;
+    grid-template-rows: 100%;
+}
+
+#messageInput{
+    background: var(--bg1);
+    border: solid 1px var(--receive);
+    padding-left: 1%;
+}
+
+#messageSend{
+    background: var(--interactive);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.dateBox{
+    text-align: center;
+    margin-left: 25%;
+    margin-right: 25%;
+    margin-top: 2.5%;
+    margin-bottom: 2.5%;
+    padding: 1%;
+    background: var(--interactive);
+    border-radius: 25px;
+}
+
+.send {
+    height:fit-content;
+    background: var(--send);
+    margin-left: 50%;
+    margin-right: 2%;
+    padding: 1.5%;
+    margin-top: 1.5%;
+    margin-bottom: 1.5%;
+    border-radius: 10px;
+    border-bottom-right-radius: 0px;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 33% 33% 33%;
+}
+
+.receive{
+    height: auto;
+    background: var(--receive);
+    margin-right: 50%;
+    margin-left: 2%;
+    margin-top: 1.5%;
+    margin-bottom: 1.5%;
+    padding: 1.5%;
+    border-radius: 10px;
+    border-bottom-left-radius: 0px;
+    display: grid;
+    grid-template-rows: repeat(3, 33%);
+}
+
+.sender{
+    grid-row-start: 1;
+    grid-row-end: 2;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    font-size: medium;
+    color: var(--interactive)
+}
+
+.message{
+    grid-row-start: 2;
+    grid-row-end: 3;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    overflow-wrap: break-word;
+}
+
+.time{
+    font-size: small;
+    text-align: right;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    grid-column-start: 2;
+    grid-column-end: 3;
+    padding-top: 5%;
+    color:brown;
+}
+
+.status{
+    font-size: small;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    grid-column-start: 1;
+    grid-column-end: 2;
+    padding-top: 5%;
+    color:brown;
+}
+
+#alertCon{
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    background: #2e2828b6;
+    scale: 0;
+}
+
+#alert{
+    position: absolute;
+    height: 40vh;
+    width: 40vw;
+    background: var(--receive);
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 90% 10%;
+    top:50%;
+    left:50%;
+    transform: translateX(-50%) translateY(-50%);
+    border-radius: 15px;
+    border: 2px solid var(--send);
+}
+
+#alertMsg{
+    text-align: center;
+    padding: 5%;
+    overflow-y: auto;
+    font-size: x-large;
+}
+
+#alertClose{
+    border-radius: 15px;
+    cursor: pointer;
+    background: var(--interactive);
+    color: var(--bg1);
+}

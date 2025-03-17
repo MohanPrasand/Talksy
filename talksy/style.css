@@ -1,0 +1,85 @@
+*{
+    margin:0;
+    --bg1: 	#fff6d6; 
+    --bg2: 	#fff3c5;
+    --interactive: #ff6f69;
+    --send: #e5c3c6;
+    --receive: #96ceb4;
+    font-size: large;
+}
+
+#welcome{
+    background: var(--bg1);
+    background-size: cover;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#welto{
+    color: var(--interactive);
+    font-size: 3em;
+}
+
+#talksy{
+    font-size: 8em;
+    color: var(--receive);
+    
+}
+
+::selection{
+    color:var(--interactive);
+    background: var(--receive);
+}
+
+#newh{
+    position: absolute;
+    left:10%;
+    font-size: 2em;
+    color:var(--interactive);
+    text-align: center;
+}
+
+#register{
+    font-size: 1em;
+    text-decoration: none;
+    color:var(--receive);
+}
+#alrd{
+    position: absolute;
+    right:10%;
+    font-size: 2em;
+    color:var(--interactive);
+    text-align: center;
+}
+
+#login{
+    font-size: 1em;
+    text-decoration: none;
+    color:var(--receive);
+}
+
+#trail{
+    height:15px;
+    width:15px;
+    background: var(--send);
+    border-radius: 50%;
+    position: absolute;
+    animation-name: shrink;
+    animation-duration: 2s;
+    animation-iteration-count: 1;
+    scale:0;
+}
+
+@keyframes shrink {
+    0%{
+        scale:100%;
+    }
+
+    100%{
+        scale: 0%;
+    }
+}

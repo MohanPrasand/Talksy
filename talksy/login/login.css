@@ -1,0 +1,78 @@
+*{
+    margin:0;
+    --bg1: 	#fff6d6; 
+    --bg2: 	#fff3c5;
+    --interactive: #ff6f69;
+    --send: #e5c3c6;
+    --receive: #96ceb4;
+    font-size: large;
+}
+
+body{
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background: var(--bg1);
+}
+
+form{
+    position: absolute;
+    height: 60vh;
+    width: 30vw;
+    top:50%;
+    left:50%;
+    transform: translateX(-50%) translateY(-50%);
+    background: var(--send);
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: repeat(50, 10%);
+    border-radius: 15px;
+}
+
+label{
+    font-size: 1.2em;
+    margin-top: 2%;
+    margin-left: 3%;
+}
+
+#username, #pswd{
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+
+
+#submit{
+    margin-left: 20%;
+    margin-right: 20%;
+    background: var(--interactive);
+    color: var(--bg1);
+    font-size: larger;
+    cursor: pointer;
+}
+
+#error{
+    color: red;
+    text-align: center;
+}
+
+#head{
+    position: absolute;
+    display: flex;
+    width: 30vw;
+    height: 5vh;
+    justify-content: space-evenly;
+    top: 15%;
+    left: 35%;
+    align-items: center;
+}
+
+a{
+    text-decoration: none;
+    color: black;
+}
+
+#current{
+    color: var(--interactive)
+}
+
